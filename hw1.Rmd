@@ -1,0 +1,131 @@
+---
+title: "PSTAT 131-HW1"
+output: html_document
+date: "2022-10-01"
+name: "Nathan De Los Santos"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(ISLR)
+library(corrplot)
+```
+
+## Question 1
+
+Define supervised and unsupervised learning. What are the difference(s) between them?
+
+Supervised learning is a statistical learning problem in which, for each observation of the predictor measurement(s) $x_i$, there is an associated response measurement $y$
+
+Unsupervised learning is where for every observation, we observe a vector of measurements $x_i$ but no associated response $y_i$
+
+The difference between them is that supervised learning allows us to get a better understanding of the relationship between the response and the predictors, while unsupervised learning is sort of learning blindly.
+
+(from page 27-28 in the ISL Book)
+
+## Question 2
+
+Explain the difference between a regression model and a classification model, specifically in the context of machine learning.
+
+The difference between a regression model and a classification model is that, while we usually classify quantitative responses as regression problems and qualitative responses as classification problems, it becomes less important in the context of machine learning. In machine learning, For example, "least squares linear regression is used with a quantitative response, whereas logistic regression is typically used with a qualitative response. Thus, despite its name, logistic regression is a classification method".
+
+(from page 28 in the ISL Book)
+
+## Question 3
+
+Name two commonly used metrics for regression ML problems. Name two commonly used metrics for classification ML problems.
+
+Metrics for Regression ML Problems: training MSE and test MSE
+
+Metrics for Classification ML Problems: KNN and Bayes Classifier
+
+## Question 4
+
+As discussed, statistical models can be used for different purposes. These purposes can generally be classified into the following three categories. Provide a brief description of each.
+
+Descriptive Models: 
+-Choose model to best visually emphasize a trend in data
+-i.e. using a line on a scatter plot
+
+Inferential Models: 
+-What features are significant? 
+-Aim is to test theories
+-(Possibly) Casual claims
+-State relationship between outcome and predictor(s)
+
+Predictive Models:
+-What combo of features fits best?
+-Aim is to predict Y with minimum reducible error
+-Not focused on hypothesis tests
+
+(from the lecture)
+
+## Question 5
+
+Define mechanistic. Define empirically-driven. How do these model types differ? How are they similar?
+
+Mechanistic models use theories to predict the environment around them, while empirically-driven models use gathered evidence to interpret information. These models differ in the sense that the process is reversed -- mechanistic uses evidence to explain the environment and empirically-driven models use the environment to explain the evidence. They are similar because mechanistic models use elements of empirically-driven models, and empirically-driven models use elements of mechanistic models.
+
+## Question 6
+
+Given a voter’s profile/data, how likely is it that they will vote in favor of the candidate?
+
+Predictive, because we are given a set of data (the voter's profile) and asked to guess the response based off of the predictor variables.
+
+How would a voter’s likelihood of support for the candidate change if they had personal contact with the candidate?
+
+Inferential, because we are not so much concerned with the result of which candidate gets voted for, but how much the support for one candidate will change due to one predictor variable where we can use hypothesis to make inferences about that association. 
+
+## Exercise 1
+
+```{r}
+hist(mpg$hwy)
+```
+This histogram of hwy shows two modes, one at 15-20 and one at 25-30. This model is slightly skewed to the right, meaning there are more observations where we see a low amount of highway miles per gallon than a high amount.
+
+## Exercise 2
+
+```{r}
+plot(mpg$hwy, mpg$cty)
+```
+There is a positive correlation between cty and hwy. As the amount of city miles per gallon increases, highway miles per gallon also increases. This means that the more someone drives in the city, the more likely they are to be using a highway as a means of travel. Moreover, this makes sense since, a rural area for example, will use more backroads than highways to travel through their area.
+
+## Exercise 3
+
+```{r}
+ggplot(data = mpg, mapping = aes(x = reorder(factor(manufacturer), manufacturer, function(x) -length(x)))) + geom_bar() + coord_flip()
+```
+Most Cars Manufactured: Dodge
+Least Cars Manufactred: Lincoln
+
+## Exercise 4
+
+```{r}
+boxplot(mpg$hwy ~ mpg$cyl)
+```
+Yes, there is a slight pattern that, as the amount of cylinders increases, the amount of highway miles per gallon starts to decrease. For instance, the mean amount for hwy starts at ~28 (4 cylinders) to ~28 (5 cylinders) to ~24 (6 cylinders) to ~18 (8 cylinders)
+
+## Exercise 5
+
+```{r}
+df <- data.frame(mpg)[,c("displ","year","cyl","cty","hwy")]
+M = cor(df)
+corrplot(M, type = 'lower')
+```
+Positively Correlated Variables:
+-displ & year
+-displ & cyl
+-year & cyl
+-cty & hwy
+Negatively Correlated Variables:
+-displ & cty
+-displ & hwy
+-year & cty
+-cyl & cty
+-cyl & hwy
+Personally, these relationships make sense to me. For example, the negative correlation between cyl and cty, since cars in the city are typically geared more for fuel efficiency than having a powerful engine. A relationship that did surprise me was the slight negative correlation between year and cty, not because I thought it would be the opposite, but because I thought there would be 0 correlation at all.
